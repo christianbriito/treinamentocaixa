@@ -3,6 +3,7 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+import database
 
 #Criação da Janela
 
@@ -28,17 +29,37 @@ UserEntry = ttk.Entry(RightFrame, width=30)
 UserEntry.place(x=90, y=110)
 
 #Aba de Senha
+
 PassLabel = Label(RightFrame, text="Senha:", font=("Century Gothic", 20), bg="midnightblue", fg="white")
 PassLabel.place(x=5, y=170)
 
 PassEntry = ttk.Entry(RightFrame, width=30, show="*")
 PassEntry.place(x=100, y=180)
 
+def Login():
+    User = UserEntry.get()
+    Pass = PassEntry.get()
+
+    database.cursor.execute("""
+    SELECT * FROM  usuarios
+    WHERE (User = ? and password = ?)
+    """, (User, Pass))
+    print("Selecionou")
+
+    VerifyLogin = database.cursor.fetchone()
+    
+    try:
+            if (User in VerifyLogin and Pass in VerifyLogin):
+                messagebox.showinfo(title="Login Info", message="Acesso Permitido")
+                print("Aprovado")
+    except:
+        
+                messagebox.showinfo(title="Login Info", message="Acesso negado")
+                print("Negado")
 #Botão Login
 
-LoginButton = ttk.Button(RightFrame, text="Login", width=10 )
+LoginButton = ttk.Button(RightFrame, text="Login", width=10, command=Login)
 LoginButton.place(x=120, y=250) 
-
 
 
 
